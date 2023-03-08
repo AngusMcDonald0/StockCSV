@@ -1,4 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using StockCSV.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<StockCSVContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("StockCSVContext") ?? throw new InvalidOperationException("Connection string 'StockCSVContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
