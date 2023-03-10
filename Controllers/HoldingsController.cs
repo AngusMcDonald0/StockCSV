@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StockCSV.Data;
 using StockCSV.Models;
+using System.IO;
 
 namespace StockCSV.Controllers
 {
@@ -22,7 +23,9 @@ namespace StockCSV.Controllers
         // GET: Holdings
         public async Task<IActionResult> Index()
         {
-              return _context.Holding != null ? 
+            var path = "Confirmation.csv";
+            //var text = File.ReadAllText(path);
+            return _context.Holding != null ? 
                           View(await _context.Holding.ToListAsync()) :
                           Problem("Entity set 'StockCSVContext.Holding'  is null.");
         }
