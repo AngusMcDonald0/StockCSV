@@ -23,7 +23,9 @@ namespace StockCSV.Controllers
         // GET: Holdings
         public async Task<IActionResult> Index()
         {
-            var path = "Confirmation.csv";
+            var path = @"C:\Users\angus\source\repos\StockCSV\Confirmation.csv";
+            var text = new StreamReader(path);
+            ViewData["Content"] = text.ReadToEnd();
             //var text = File.ReadAllText(path);
             return _context.Holding != null ? 
                           View(await _context.Holding.ToListAsync()) :
