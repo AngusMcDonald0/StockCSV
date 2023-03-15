@@ -25,8 +25,10 @@ namespace StockCSV.Controllers
         {
             var path = @"C:\Users\angus\source\repos\StockCSV\Confirmation.csv";
             var text = new StreamReader(path);
-            ViewData["Content"] = text.ReadToEnd();
-            //var text = File.ReadAllText(path);
+            var testing = text.ReadToEnd().ToString();
+            Console.WriteLine(testing[0]);
+            ViewData["Content"] = testing;
+
             return _context.Holding != null ? 
                           View(await _context.Holding.ToListAsync()) :
                           Problem("Entity set 'StockCSVContext.Holding'  is null.");
