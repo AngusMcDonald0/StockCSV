@@ -30,7 +30,7 @@ namespace StockCSV.Controllers
             {
                 using(var csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture))
                 {
-                    var records = csvReader.GetRecords<dynamic>().ToList();
+                    var records = csvReader.GetRecords<Trade>().ToList();
                 }
             }
 

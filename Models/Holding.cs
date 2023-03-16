@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using CsvHelper.Configuration;
-using CsvHelper.Configuration.Attributes;
 
 
 namespace StockCSV.Models

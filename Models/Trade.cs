@@ -21,6 +21,6 @@ namespace StockCSV.Models
         [Name("GST")]
         public double GST { get; set; }
         [Name("Trade Date")]
-        public DateTime PurchaseDate { get; set; }
+        public DateOnly PurchaseDate { get; set; }
     }
 }
