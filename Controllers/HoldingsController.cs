@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using StockCSV.Data;
 using StockCSV.Models;
 using System.IO;
+using CsvHelper;
+using System.Globalization;
 
 namespace StockCSV.Controllers
 {
@@ -24,10 +26,20 @@ namespace StockCSV.Controllers
         public async Task<IActionResult> Index()
         {
             var path = @"C:\Users\angus\source\repos\StockCSV\Confirmation.csv";
-            var text = new StreamReader(path);
-            var testing = text.ReadToEnd().ToString();
-            Console.WriteLine(testing[0]);
-            ViewData["Content"] = testing;
+            using (var streamReader = new StreamReader(path))
+            {
+                using(var csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture))
+                {
+                    var records = 
+                }
+            }
+
+
+            //var testing = streamReader.ReadToEnd().ToString();
+            //string[] rows = testing.Split('\n');
+
+            //ViewData["Content"] = testing;
+
 
             return _context.Holding != null ? 
                           View(await _context.Holding.ToListAsync()) :
