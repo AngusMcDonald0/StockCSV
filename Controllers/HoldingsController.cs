@@ -31,15 +31,9 @@ namespace StockCSV.Controllers
                 using(var csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture))
                 {
                     var records = csvReader.GetRecords<Trade>().ToList();
+                    ViewData["Trades"] = records;
                 }
             }
-
-
-            //var testing = streamReader.ReadToEnd().ToString();
-            //string[] rows = testing.Split('\n');
-
-            //ViewData["Content"] = testing;
-
 
             return _context.Holding != null ? 
                           View(await _context.Holding.ToListAsync()) :
