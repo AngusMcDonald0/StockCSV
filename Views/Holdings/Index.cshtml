@@ -53,7 +53,7 @@
 </table>
 
 @{
-    IEnumerable<Trade> trades = ViewData["Trades"] as IEnumerable<Trade>;
+    IEnumerable<Trade>? trades = ViewData["Trades"] as IEnumerable<Trade>;
 }
 
 <h1>Trades</h1>
@@ -71,18 +71,21 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (Trade trade in trades)
+        @if (trades is not null)
         {
-            <tr>
-                <td>@trade.Code</td>
-                <td>@trade.TradeType</td>
-                <td>@trade.Units</td>
-                <td>@trade.Price</td>
-                <td>@trade.Consideration</td>
-                <td>@trade.Brokerage</td>
-                <td>@trade.GST</td>
-                <td>@trade.PurchaseDate</td>
-            </tr>
+            @foreach (Trade trade in trades)
+            {
+                <tr>
+                    <td>@trade.Code</td>
+                    <td>@trade.TradeType</td>
+                    <td>@trade.Units</td>
+                    <td>@trade.Price</td>
+                    <td>@trade.Consideration</td>
+                    <td>@trade.Brokerage</td>
+                    <td>@trade.GST</td>
+                    <td>@trade.PurchaseDate</td>
+                </tr>
+            }
         }
     </tbody>
 </table>
