@@ -11,7 +11,7 @@ using System.IO;
 using CsvHelper;
 using System.Globalization;
 using StockCSV.Services;
-using StockCSV.Interfaces; 
+using StockCSV.Interfaces;
 
 namespace StockCSV.Controllers
 {
@@ -30,13 +30,17 @@ namespace StockCSV.Controllers
         public IActionResult Index()
         {
             // hardcoded path to get csv data into useable viewdata
-            var path = @"C:\Users\angus\source\repos\StockCSV\Confirmation.csv";
-            using (var streamReader = new StreamReader(path))
+            var uploadedFiles = @"C:\Users\angus\source\repos\StockCSV\UploadedFiles";
+            var path = Directory.GetFiles(uploadedFiles);
+            if (path.Length >= 1)
             {
-                using (var csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture))
+                using (var streamReader = new StreamReader(path[0]))
                 {
-                    var records = csvReader.GetRecords<Trade>().ToList();
-                    ViewData["Trades"] = records;
+                    using (var csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture))
+                    {
+                        var records = csvReader.GetRecords<Trade>().ToList();
+                        ViewData["Trades"] = records;
+                    }
                 }
             }
             return View(_context.Holding.ToList());
