@@ -1,4 +1,6 @@
-﻿namespace StockCSV.Services
+﻿using StockCSV.Interfaces;
+
+namespace StockCSV.Services
 {
     public class FileUploadLocalService : IFileUploadService
     {

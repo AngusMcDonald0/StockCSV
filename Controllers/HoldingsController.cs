@@ -10,35 +10,65 @@ using StockCSV.Models;
 using System.IO;
 using CsvHelper;
 using System.Globalization;
+using StockCSV.Services;
+using StockCSV.Interfaces; 
 
 namespace StockCSV.Controllers
 {
     public class HoldingsController : Controller
     {
         private readonly StockCSVContext _context;
+        readonly IFileUploadService _fileUploadService;
 
-        public HoldingsController(StockCSVContext context)
+        public HoldingsController(StockCSVContext context, IFileUploadService fileUploadService)
         {
             _context = context;
+            _fileUploadService = fileUploadService;
         }
 
         // GET: Holdings
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
+            // hardcoded path to get csv data into useable viewdata
             var path = @"C:\Users\angus\source\repos\StockCSV\Confirmation.csv";
             using (var streamReader = new StreamReader(path))
             {
-                using(var csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture))
+                using (var csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture))
                 {
                     var records = csvReader.GetRecords<Trade>().ToList();
                     ViewData["Trades"] = records;
                 }
             }
+            return View(_context.Holding.ToList());
+        }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> Index(IFormFile file)
+        {
+            // file upload
+            try
+            {
+                if (await _fileUploadService.UploadFile(file))
+                {
+                    ViewBag.Message = "File Upload Successful";
+                }
+                else
+                {
+                    ViewBag.Message = "File Upload Failed";
+                }
+            }
+            catch (Exception ex)
+            {
+                //Log ex
+                ViewBag.Message = "File Upload Failed";
+            }
 
             return _context.Holding != null ? 
                           View(await _context.Holding.ToListAsync()) :
                           Problem("Entity set 'StockCSVContext.Holding'  is null.");
-        }
+    }
 
         // GET: Holdings/Details/5
         public async Task<IActionResult> Details(int? id)
