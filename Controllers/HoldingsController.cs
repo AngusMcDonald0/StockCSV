@@ -29,7 +29,7 @@ namespace StockCSV.Controllers
         // GET: Holdings
         public IActionResult Index()
         {
-            // hardcoded path to get csv data into useable viewdata
+            // access uploaded file if present
             var uploadedFiles = @"C:\Users\angus\source\repos\StockCSV\UploadedFiles";
             var path = Directory.GetFiles(uploadedFiles);
             if (path.Length >= 1)
@@ -63,9 +63,8 @@ namespace StockCSV.Controllers
                     ViewBag.Message = "File Upload Failed";
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                //Log ex
                 ViewBag.Message = "File Upload Failed";
             }
 

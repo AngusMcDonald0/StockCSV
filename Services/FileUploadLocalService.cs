@@ -9,7 +9,7 @@ namespace StockCSV.Services
             string path = "";
             try
             {
-                if (file.Length > 0)
+                if (file is not null && Path.GetExtension(file.FileName) == ".csv")
                 {
                     path = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, "UploadedFiles"));
                     if (!Directory.Exists(path))
