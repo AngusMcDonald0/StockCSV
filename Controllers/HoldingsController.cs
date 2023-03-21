@@ -30,19 +30,19 @@ namespace StockCSV.Controllers
         public IActionResult Index()
         {
             // access uploaded file if present
-            var uploadedFiles = @"C:\Users\angus\source\repos\StockCSV\UploadedFiles";
-            var path = Directory.GetFiles(uploadedFiles);
-            if (path.Length >= 1)
-            {
-                using (var streamReader = new StreamReader(path[0]))
-                {
-                    using (var csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture))
-                    {
-                        var records = csvReader.GetRecords<Trade>().ToList();
-                        ViewData["Trades"] = records;
-                    }
-                }
-            }
+            //var uploadedFiles = @"C:\Users\angus\source\repos\StockCSV\UploadedFiles";
+            //var path = Directory.GetFiles(uploadedFiles);
+            //if (path.Length >= 1)
+            //{
+            //    using (var streamReader = new StreamReader(path[0]))
+            //    {
+            //        using (var csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture))
+            //        {
+            //            var records = csvReader.GetRecords<Trade>().ToList();
+            //            ViewData["Trades"] = records;
+            //        }
+            //    }
+            //}
             return View(_context.Holding.ToList());
         }
 
@@ -67,11 +67,25 @@ namespace StockCSV.Controllers
             {
                 ViewBag.Message = "File Upload Failed";
             }
+            // get csv data to display
+            var uploadedFiles = @"C:\Users\angus\source\repos\StockCSV\UploadedFiles";
+            var path = Directory.GetFiles(uploadedFiles);
+            if (path.Length >= 1)
+            {
+                using (var streamReader = new StreamReader(path[0]))
+                {
+                    using (var csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture))
+                    {
+                        var records = csvReader.GetRecords<Trade>().ToList();
+                        ViewData["Trades"] = records;
+                    }
+                }
+            }
 
             return _context.Holding != null ? 
                           View(await _context.Holding.ToListAsync()) :
                           Problem("Entity set 'StockCSVContext.Holding'  is null.");
-    }
+        }
 
         // GET: Holdings/Details/5
         public async Task<IActionResult> Details(int? id)
