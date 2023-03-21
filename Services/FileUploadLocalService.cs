@@ -16,7 +16,7 @@ namespace StockCSV.Services
                     {
                         Directory.CreateDirectory(path);
                     }
-                    using (var fileStream = new FileStream(Path.Combine(path, file.FileName), FileMode.Create))
+                    using (var fileStream = new FileStream(Path.Combine(path, Path.GetRandomFileName()), FileMode.Create))
                     {
                         await file.CopyToAsync(fileStream);
                     }
