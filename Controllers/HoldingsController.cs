@@ -29,20 +29,6 @@ namespace StockCSV.Controllers
         // GET: Holdings
         public IActionResult Index()
         {
-            // access uploaded file if present
-            //var uploadedFiles = @"C:\Users\angus\source\repos\StockCSV\UploadedFiles";
-            //var path = Directory.GetFiles(uploadedFiles);
-            //if (path.Length >= 1)
-            //{
-            //    using (var streamReader = new StreamReader(path[0]))
-            //    {
-            //        using (var csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture))
-            //        {
-            //            var records = csvReader.GetRecords<Trade>().ToList();
-            //            ViewData["Trades"] = records;
-            //        }
-            //    }
-            //}
             return View(_context.Holding.ToList());
         }
 
