@@ -4,10 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Holdings at start of financial year</h1>
+<h1>Current Holdings</h1>
 
 <p>
-    <a asp-action="Create">Add holding</a>
+    <a asp-action="Create">Add holding from start of financial year</a>
 </p>
 <table class="table">
     <thead>
@@ -29,6 +29,8 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
+    @if (item.Units > 0)
+    {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Code)
@@ -48,6 +50,7 @@
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
+    }
 }
     </tbody>
 </table>

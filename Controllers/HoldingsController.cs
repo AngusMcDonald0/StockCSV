@@ -84,6 +84,7 @@ namespace StockCSV.Controllers
         private double TaxCalculator()
         {
             var records = CsvToList();
+            records.Reverse();
             var total = 0.0;
             foreach (var record in records)
             {
@@ -101,26 +102,42 @@ namespace StockCSV.Controllers
                             var saleValue = (record.Price * recordUnits) - (record.GST + record.Brokerage);
                             var profitLoss = saleValue - costPrice;
                             holding.Units -= recordUnits;
+                            if (holding.Units == 0)
+                            {
+                                holding.AVGPrice = 0;
+                            }
                             // add 12 month holding discount later???
                             total += profitLoss;
+                            break;
                         }
                     }
                 }
                 // if buy do this, 
                 // if record asx code == an existing holding asx code, add to current holding and adjust average price. otherwise break and create new holding.
+                var adjusted = 0;
                 if (record.TradeType == "Buy")
                 {
                     foreach (var holding in _context.Holding)
                     {
                         if (holding.Code == record.Code)
                         {
-
+                            holding.Units += record.Units;
+                            var totalCostPrice = record.Consideration + (holding.Units * holding.AVGPrice);
+                            holding.AVGPrice = Math.Round((totalCostPrice / holding.Units), 2);
+                            adjusted = 1;
+                            break;
                         }
 
                     }
+                    if (adjusted == 0)
+                    {
+                        var purchaseDate = record.PurchaseDate.ToDateTime(TimeOnly.MinValue);
+                        var newHolding = new Holding(record.Code, record.Units, record.Price, purchaseDate);
+                        _context.Add(newHolding);
+                    }
                 }
             }
-            return total;
+            return Math.Round(total, 2);
         }
 
         // GET: Holdings/Details/5
