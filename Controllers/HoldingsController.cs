@@ -83,6 +83,8 @@ namespace StockCSV.Controllers
 
         private double TaxCalculator()
         {
+            // TO-DO: update purchase date when holdings change?
+            // 
             var records = CsvToList();
             records.Reverse();
             var total = 0.0;
