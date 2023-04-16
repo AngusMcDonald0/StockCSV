@@ -54,6 +54,17 @@ namespace StockCSV.Controllers
                 ViewBag.Message = "File Upload Failed";
             }
             // get csv data to display
+            ViewData["Trades"] = CsvToList();
+            // calculate and show tax figures
+            TaxCalculator();
+
+            return _context.Holding != null ? 
+                          View(await _context.Holding.ToListAsync()) :
+                          Problem("Entity set 'StockCSVContext.Holding'  is null.");
+        }
+
+        private List<Trade> CsvToList()
+        {
             var uploadedFiles = @"C:\Users\angus\source\repos\StockCSV\UploadedFiles";
             var path = Directory.GetFiles(uploadedFiles);
             if (path.Length >= 1)
@@ -63,14 +74,33 @@ namespace StockCSV.Controllers
                     using (var csvReader = new CsvReader(streamReader, CultureInfo.InvariantCulture))
                     {
                         var records = csvReader.GetRecords<Trade>().ToList();
-                        ViewData["Trades"] = records;
+                        return records;
                     }
                 }
             }
+            return new List<Trade>();
+        }
 
-            return _context.Holding != null ? 
-                          View(await _context.Holding.ToListAsync()) :
-                          Problem("Entity set 'StockCSVContext.Holding'  is null.");
+        private void TaxCalculator()
+        {
+            var records = CsvToList();
+            foreach (var record in records)
+            {
+                if (record.TradeType == "Sell")
+                {
+
+                }
+                foreach (var holding in _context.Holding)
+                {
+                    Console.WriteLine(holding.Code);
+                }
+                // foreach holding
+                // if buy do this, 
+                // if record asx code != holding asx code, create new holding, otherwise add to current holding and adjust average price
+
+                // if sell do this,
+                // take amount off holdings and find the difference between buy and sell amount
+            }
         }
 
         // GET: Holdings/Details/5
