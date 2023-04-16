@@ -56,7 +56,7 @@ namespace StockCSV.Controllers
             // get csv data to display
             ViewData["Trades"] = CsvToList();
             // calculate and show tax figures
-            TaxCalculator();
+            ViewData["Total"] = TaxCalculator();
 
             return _context.Holding != null ? 
                           View(await _context.Holding.ToListAsync()) :
@@ -81,26 +81,46 @@ namespace StockCSV.Controllers
             return new List<Trade>();
         }
 
-        private void TaxCalculator()
+        private double TaxCalculator()
         {
             var records = CsvToList();
+            var total = 0.0;
             foreach (var record in records)
             {
-                if (record.TradeType == "Sell")
-                {
-
-                }
-                foreach (var holding in _context.Holding)
-                {
-                    Console.WriteLine(holding.Code);
-                }
-                // foreach holding
-                // if buy do this, 
-                // if record asx code != holding asx code, create new holding, otherwise add to current holding and adjust average price
-
                 // if sell do this,
                 // take amount off holdings and find the difference between buy and sell amount
+                // if holdings becomes negative or doesnt exist throw exception???
+                if (record.TradeType == "Sell")
+                {
+                    foreach (var holding in _context.Holding)
+                    {
+                        if (holding.Code == record.Code)
+                        {
+                            var recordUnits = record.Units;
+                            var costPrice = recordUnits * holding.AVGPrice;
+                            var saleValue = (record.Price * recordUnits) - (record.GST + record.Brokerage);
+                            var profitLoss = saleValue - costPrice;
+                            holding.Units -= recordUnits;
+                            // add 12 month holding discount later???
+                            total += profitLoss;
+                        }
+                    }
+                }
+                // if buy do this, 
+                // if record asx code == an existing holding asx code, add to current holding and adjust average price. otherwise break and create new holding.
+                if (record.TradeType == "Buy")
+                {
+                    foreach (var holding in _context.Holding)
+                    {
+                        if (holding.Code == record.Code)
+                        {
+
+                        }
+
+                    }
+                }
             }
+            return total;
         }
 
         // GET: Holdings/Details/5
