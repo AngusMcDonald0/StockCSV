@@ -84,7 +84,6 @@ namespace StockCSV.Controllers
         private double TaxCalculator()
         {
             // TO-DO: update purchase date when holdings change?
-            // 
             var records = CsvToList();
             records.Reverse();
             var total = 0.0;
@@ -121,7 +120,7 @@ namespace StockCSV.Controllers
                 {
                     foreach (var holding in _context.Holding)
                     {
-                        if (holding.Code == record.Code)
+                        if (holding.Code == record.Code && holding.Units > 0)
                         {
                             holding.Units += record.Units;
                             var totalCostPrice = record.Consideration + (holding.Units * holding.AVGPrice);

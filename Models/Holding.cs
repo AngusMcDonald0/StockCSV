@@ -17,6 +17,7 @@ namespace StockCSV.Models
 
         public Holding(string? code, int units, double aVGPrice, DateTime purchaseDate)
         {
+            Id = Int32.Parse(Guid.NewGuid().ToString());
             Code = code;
             Units = units;
             AVGPrice = aVGPrice;
