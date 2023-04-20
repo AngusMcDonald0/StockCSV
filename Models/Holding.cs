@@ -13,8 +13,6 @@ namespace StockCSV.Models
         public double AVGPrice { get; set; }
         public DateTime PurchaseDate { get; set; }
 
-        public Holding() { }
-
         public Holding(string? code, int units, double aVGPrice, DateTime purchaseDate)
         {
             Code = code;
