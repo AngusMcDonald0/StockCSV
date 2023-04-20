@@ -106,6 +106,7 @@ namespace StockCSV.Controllers
                             if (holding.Units == 0)
                             {
                                 holding.AVGPrice = 0;
+                                holding.Code = "null";
                             }
                             // add 12 month holding discount later???
                             total += profitLoss;
@@ -125,7 +126,9 @@ namespace StockCSV.Controllers
                             holding.Units += record.Units;
                             var totalCostPrice = record.Consideration + (holding.Units * holding.AVGPrice);
                             holding.AVGPrice = Math.Round((totalCostPrice / holding.Units), 2);
-                            adjusted = 1;
+                            var purchaseDate = record.PurchaseDate.ToDateTime(TimeOnly.MinValue);
+                            holding.PurchaseDate = purchaseDate;
+                            adjusted = 1; 
                             break;
                         }
 
@@ -138,6 +141,7 @@ namespace StockCSV.Controllers
                     }
                 }
             }
+            ViewData["Holdings"] = _context.Holding;
             return Math.Round(total, 2);
         }
 

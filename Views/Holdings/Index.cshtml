@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Current Holdings</h1>
+<h1>Holdings at the start of financial year</h1>
 
 <p>
     <a asp-action="Create">Add holding from start of financial year</a>
@@ -100,6 +100,40 @@
 <p>
     the total is: @total
 </p>
+
+@{
+    IEnumerable<Holding>? holdings = ViewData["Holdings"] as IEnumerable<Holding>;
+}
+<h1>Current Holdings</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Asx Code</th>
+            <th>Units</th>
+            <th>Average Price</th>
+            <th>Purchase Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (holdings is not null)
+        {
+            @foreach (Holding holding in holdings)
+            {
+                <tr>
+                    <td>@holding.Code</td>
+                    <td>@holding.Units</td>
+                    <td>@holding.AVGPrice</td>
+                    <td>@holding.PurchaseDate</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+
+
+
 
 <h1>Buffered File Upload</h1>
 
