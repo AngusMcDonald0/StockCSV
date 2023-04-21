@@ -17,7 +17,7 @@ namespace StockCSV.Controllers
 {
     public class HoldingsController : Controller
     {
-        private readonly StockCSVContext _context;
+        private StockCSVContext _context;
         readonly IFileUploadService _fileUploadService;
 
         public HoldingsController(StockCSVContext context, IFileUploadService fileUploadService)
@@ -55,6 +55,7 @@ namespace StockCSV.Controllers
             }
             // get csv data to display
             ViewData["Trades"] = CsvToList();
+
             // calculate and show tax figures
             ViewData["Total"] = TaxCalculator();
 
@@ -83,7 +84,13 @@ namespace StockCSV.Controllers
 
         private double TaxCalculator()
         {
-            // TO-DO: update purchase date when holdings change?
+            foreach (var holding in _context.Holding)
+            {
+                if (holding.Units == 0)
+                {
+                    holding.Code = "null";
+                }
+            }
             var records = CsvToList();
             records.Reverse();
             var total = 0.0;
@@ -106,30 +113,27 @@ namespace StockCSV.Controllers
                             if (holding.Units == 0)
                             {
                                 holding.AVGPrice = 0;
-                                holding.Code = "null";
                             }
                             // add 12 month holding discount later???
                             total += profitLoss;
-                            break;
                         }
                     }
                 }
                 // if buy do this, 
                 // if record asx code == an existing holding asx code, add to current holding and adjust average price. otherwise break and create new holding.
-                var adjusted = 0;
-                if (record.TradeType == "Buy")
+                else if (record.TradeType == "Buy")
                 {
+                    var adjusted = 0;
                     foreach (var holding in _context.Holding)
                     {
-                        if (holding.Code == record.Code && holding.Units > 0)
+                        if (holding.Code == record.Code /* && holding.Units > 0 */)
                         {
                             holding.Units += record.Units;
                             var totalCostPrice = record.Consideration + (holding.Units * holding.AVGPrice);
-                            holding.AVGPrice = Math.Round((totalCostPrice / holding.Units), 2);
+                            holding.AVGPrice = Math.Round(totalCostPrice / holding.Units, 2);
                             var purchaseDate = record.PurchaseDate.ToDateTime(TimeOnly.MinValue);
                             holding.PurchaseDate = purchaseDate;
                             adjusted = 1; 
-                            break;
                         }
 
                     }
@@ -137,6 +141,7 @@ namespace StockCSV.Controllers
                     {
                         var purchaseDate = record.PurchaseDate.ToDateTime(TimeOnly.MinValue);
                         var newHolding = new Holding(record.Code, record.Units, record.Price, purchaseDate);
+                        // this still isnt working so cant add new holding for a period. cant edit db in general
                         _context.Add(newHolding);
                     }
                 }
