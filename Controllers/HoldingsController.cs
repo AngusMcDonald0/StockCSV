@@ -17,7 +17,7 @@ namespace StockCSV.Controllers
 {
     public class HoldingsController : Controller
     {
-        private StockCSVContext _context;
+        private readonly StockCSVContext _context;
         readonly IFileUploadService _fileUploadService;
 
         public HoldingsController(StockCSVContext context, IFileUploadService fileUploadService)
