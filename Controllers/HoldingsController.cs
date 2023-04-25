@@ -126,7 +126,7 @@ namespace StockCSV.Controllers
                     var adjusted = 0;
                     foreach (var holding in _context.Holding)
                     {
-                        if (holding.Code == record.Code /* && holding.Units > 0 */)
+                        if (holding.Code == record.Code && holding.Units > 0)
                         {
                             holding.Units += record.Units;
                             var totalCostPrice = record.Consideration + (holding.Units * holding.AVGPrice);
@@ -143,6 +143,7 @@ namespace StockCSV.Controllers
                         var newHolding = new Holding(record.Code, record.Units, record.Price, purchaseDate);
                         // this still isnt working so cant add new holding for a period. cant edit db in general
                         _context.Add(newHolding);
+                        _context.SaveChanges();
                     }
                 }
             }
