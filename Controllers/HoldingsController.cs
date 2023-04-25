@@ -106,21 +106,31 @@ namespace StockCSV.Controllers
                         if (holding.Code == record.Code)
                         {
                             var recordUnits = record.Units;
+                            holding.Units -= recordUnits;
+                            if (holding.Units < 0)
+                            {
+                                throw new Exception("Insufficient holdings for trade type sale of" + holding.Code);
+                            }
                             var costPrice = recordUnits * holding.AVGPrice;
                             var saleValue = (record.Price * recordUnits) - (record.GST + record.Brokerage);
                             var profitLoss = saleValue - costPrice;
-                            holding.Units -= recordUnits;
                             if (holding.Units == 0)
                             {
-                                holding.AVGPrice = 0;
+                                _context.Remove(holding);
                             }
                             // add 12 month holding discount later???
                             total += profitLoss;
                         }
+                        else 
+                        {
+
+                        }
                     }
+                    _context.SaveChanges();
                 }
+
                 // if buy do this, 
-                // if record asx code == an existing holding asx code, add to current holding and adjust average price. otherwise break and create new holding.
+                // if record asx code == an existing holding asx code, add to current holding and adjust average price. otherwise create new holding.
                 else if (record.TradeType == "Buy")
                 {
                     var adjusted = 0;
@@ -141,7 +151,6 @@ namespace StockCSV.Controllers
                     {
                         var purchaseDate = record.PurchaseDate.ToDateTime(TimeOnly.MinValue);
                         var newHolding = new Holding(record.Code, record.Units, record.Price, purchaseDate);
-                        // this still isnt working so cant add new holding for a period. cant edit db in general
                         _context.Add(newHolding);
                         _context.SaveChanges();
                     }
