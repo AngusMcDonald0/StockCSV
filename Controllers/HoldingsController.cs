@@ -114,6 +114,10 @@ namespace StockCSV.Controllers
                             var costPrice = recordUnits * holding.AVGPrice;
                             var saleValue = (record.Price * recordUnits) - (record.GST + record.Brokerage);
                             var profitLoss = saleValue - costPrice;
+                            if (profitLoss > 0 && holding.PurchaseDate.AddMonths(12) < DateTime.Now)
+                            {
+                                profitLoss /= 2;
+                            }
                             if (holding.Units == 0)
                             {
                                 _context.Remove(holding);
