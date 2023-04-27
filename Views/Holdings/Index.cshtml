@@ -138,7 +138,7 @@
 
 <form method="post" enctype="multipart/form-data">
     <input type="file" name="file" />
-    <button type="submit">Upload File</button>
+    <button type="submit" asp-area="" asp-controller="Holdings" asp-action="Trades">Upload File</button>
 </form>
 
 @if (ViewBag.Message != null)
