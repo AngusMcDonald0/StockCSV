@@ -52,85 +52,6 @@
     </tbody>
 </table>
 
-@{
-    IEnumerable<Trade>? trades = ViewData["Trades"] as IEnumerable<Trade>;
-}
-
-<h1>Trades</h1>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Asx Code</th>
-            <th>Order Type</th>
-            <th>Quantity</th>
-            <th>Price</th>
-            <th>Consideration</th>
-            <th>Brokerage</th>
-            <th>GST</th>
-            <th>Trade Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (trades is not null)
-        {
-            @foreach (Trade trade in trades)
-            {
-                <tr>
-                    <td>@trade.Code</td>
-                    <td>@trade.TradeType</td>
-                    <td>@trade.Units</td>
-                    <td>@trade.Price</td>
-                    <td>@trade.Consideration</td>
-                    <td>@trade.Brokerage</td>
-                    <td>@trade.GST</td>
-                    <td>@trade.PurchaseDate</td>
-                </tr>
-            }
-        }
-    </tbody>
-</table>
-
-@{
-    var total = ViewData["Total"];
-}
-
-<p>
-    the total is: @total
-</p>
-
-@{
-    IEnumerable<Holding>? holdings = ViewData["Holdings"] as IEnumerable<Holding>;
-}
-<h1>Current Holdings</h1>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Asx Code</th>
-            <th>Units</th>
-            <th>Average Price</th>
-            <th>Purchase Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (holdings is not null)
-        {
-            @foreach (Holding holding in holdings)
-            {
-                <tr>
-                    <td>@holding.Code</td>
-                    <td>@holding.Units</td>
-                    <td>@holding.AVGPrice</td>
-                    <td>@holding.PurchaseDate</td>
-                </tr>
-            }
-        }
-    </tbody>
-</table>
-
-
-
-
-
 
 <h1>Buffered File Upload</h1>
 
@@ -138,7 +59,7 @@
 
 <form method="post" enctype="multipart/form-data">
     <input type="file" name="file" />
-    <button type="submit" asp-area="" asp-controller="Holdings" asp-action="Trades">Upload File</button>
+    <button type="submit" asp-area="" asp-controller="Trades" asp-action="Index">Upload File</button>
 </form>
 
 @if (ViewBag.Message != null)
