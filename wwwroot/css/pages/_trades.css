@@ -1,8 +1,7 @@
-﻿.trade-summary {
-    a {
+﻿.trade-summary a {
         text-decoration: none;
     }
-    a:hover {
+
+.trade-summary a:hover {
         text-decoration: none;
     }
-}

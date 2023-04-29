@@ -1,5 +1,4 @@
-@import "pages/_trades.css";
-@import "pages/_holdings.css"
+@import "pages/Index.css";
 
 html {
   font-size: 14px;

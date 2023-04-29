@@ -2,11 +2,11 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center mt-5">
+<div class="home-container">
     <h1 class="display-4">Welcome to Tax Calculator</h1>
     <p>Simply add your holdings from the start of the financial year, then upload a CSV file of your trading summary</p>
-    <div>
-        <a asp-area="" asp-controller="Holdings" asp-action="Index">Calculate My Tax</a>
+    <div class="home-btn">
+        <a class="btn-calculate" asp-area="" asp-controller="Holdings" asp-action="Index">Calculate My Tax</a>
     </div>
 </div>
 

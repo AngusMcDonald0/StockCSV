@@ -60,7 +60,7 @@ namespace StockCSV.Controllers
             {
                 // if sell do this,
                 // take amount off holdings and find the difference between buy and sell amount
-                // if holdings becomes negative or doesnt exist throw exception???
+                // if holdings becomes negative or doesnt exist throw exception
                 if (record.TradeType == "Sell")
                 {
                     foreach (var holding in _context.Holding)
@@ -76,20 +76,21 @@ namespace StockCSV.Controllers
                             var costPrice = recordUnits * holding.AVGPrice;
                             var saleValue = (record.Price * recordUnits) - (record.GST + record.Brokerage);
                             var profitLoss = saleValue - costPrice;
+                            // 12 month holding discount
                             if (profitLoss > 0 && holding.PurchaseDate.AddMonths(12) < DateTime.Now)
                             {
                                 profitLoss /= 2;
                             }
+                            // Delete holding if all units sold
                             if (holding.Units == 0)
                             {
                                 _context.Remove(holding);
                             }
-                            // add 12 month holding discount later???
                             total += profitLoss;
                         }
                         else
                         {
-
+                            throw new Exception($"Cannot sell a holding which does not exist. Please add {holding.Code} holdings from previous financial year");
                         }
                     }
                     _context.SaveChanges();
