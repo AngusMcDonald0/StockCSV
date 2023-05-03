@@ -46,13 +46,6 @@ namespace StockCSV.Controllers
 
         private double TaxCalculator()
         {
-            foreach (var holding in _context.Holding)
-            {
-                if (holding.Units == 0)
-                {
-                    holding.Code = "null";
-                }
-            }
             var records = CsvToList();
             records.Reverse();
             var total = 0.0;
@@ -63,36 +56,31 @@ namespace StockCSV.Controllers
                 // if holdings becomes negative or doesnt exist throw exception
                 if (record.TradeType == "Sell")
                 {
+                    var sold = false;
                     foreach (var holding in _context.Holding)
                     {
                         if (holding.Code == record.Code)
                         {
+                            sold = true;
                             var recordUnits = record.Units;
                             holding.Units -= recordUnits;
+
                             if (holding.Units < 0)
-                            {
                                 throw new Exception("Insufficient holdings for trade type sale of" + holding.Code);
-                            }
+
                             var costPrice = recordUnits * holding.AVGPrice;
                             var saleValue = (record.Price * recordUnits) - (record.GST + record.Brokerage);
                             var profitLoss = saleValue - costPrice;
-                            // 12 month holding discount
-                            if (profitLoss > 0 && holding.PurchaseDate.AddMonths(12) < DateTime.Now)
-                            {
-                                profitLoss /= 2;
-                            }
                             // Delete holding if all units sold
                             if (holding.Units == 0)
-                            {
                                 _context.Remove(holding);
-                            }
+
                             total += profitLoss;
                         }
-                        else
-                        {
-                            throw new Exception($"Cannot sell a holding which does not exist. Please add {holding.Code} holdings from previous financial year");
-                        }
-                    }
+                    }    
+                    if (sold == false)
+                        throw new Exception($"Cannot sell a holding which does not exist. Please add {record.Code} holdings from previous financial year");
+
                     _context.SaveChanges();
                 }
 
