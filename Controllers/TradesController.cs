@@ -18,10 +18,17 @@ namespace StockCSV.Controllers
         }
         public IActionResult Index()
         {
-            // get csv data to display
-            ViewData["Trades"] = CsvToList();
-            // calculate and show tax figures
-            ViewData["Total"] = TaxCalculator();
+            try
+            {
+                // get csv data to display
+                ViewData["Trades"] = CsvToList();
+                // calculate and show tax figures
+                ViewData["Total"] = TaxCalculator();
+            }
+            catch (Exception ex)
+            {
+                Response.WriteAsync("<script>alert('" + ex.Message + "')</script>");
+            }
 
             return View(_context.Holding.ToList());
         }
@@ -51,68 +58,72 @@ namespace StockCSV.Controllers
             var total = 0.0;
             foreach (var record in records)
             {
-                // if sell do this,
-                // take amount off holdings and find the difference between buy and sell amount
-                // if holdings becomes negative or doesnt exist throw exception
                 if (record.TradeType == "Sell")
-                {
-                    var sold = false;
-                    foreach (var holding in _context.Holding)
-                    {
-                        if (holding.Code == record.Code)
-                        {
-                            sold = true;
-                            var recordUnits = record.Units;
-                            holding.Units -= recordUnits;
+                    // take amount off holdings and find the difference between buy and sell amount
+                    // if holdings becomes negative or doesnt exist throw exception
+                    Sell(record, total);
 
-                            if (holding.Units < 0)
-                                throw new Exception("Insufficient holdings for trade type sale of" + holding.Code);
-
-                            var costPrice = recordUnits * holding.AVGPrice;
-                            var saleValue = (record.Price * recordUnits) - (record.GST + record.Brokerage);
-                            var profitLoss = saleValue - costPrice;
-                            // Delete holding if all units sold
-                            if (holding.Units == 0)
-                                _context.Remove(holding);
-
-                            total += profitLoss;
-                        }
-                    }    
-                    if (sold == false)
-                        throw new Exception($"Cannot sell a holding which does not exist. Please add {record.Code} holdings from previous financial year");
-
-                    _context.SaveChanges();
-                }
-
-                // if buy do this, 
-                // if record asx code == an existing holding asx code, add to current holding and adjust average price. otherwise create new holding.
                 else if (record.TradeType == "Buy")
-                {
-                    var adjusted = 0;
-                    foreach (var holding in _context.Holding)
-                    {
-                        if (holding.Code == record.Code && holding.Units > 0)
-                        {
-                            holding.Units += record.Units;
-                            var totalCostPrice = record.Consideration + (holding.Units * holding.AVGPrice);
-                            holding.AVGPrice = Math.Round(totalCostPrice / holding.Units, 2);
-                            var purchaseDate = record.PurchaseDate.ToDateTime(TimeOnly.MinValue);
-                            holding.PurchaseDate = purchaseDate;
-                            adjusted = 1;
-                        }
-
-                    }
-                    if (adjusted == 0)
-                    {
-                        var purchaseDate = record.PurchaseDate.ToDateTime(TimeOnly.MinValue);
-                        var newHolding = new Holding(record.Code, record.Units, record.Price, purchaseDate);
-                        _context.Add(newHolding);
-                        _context.SaveChanges();
-                    }
-                }
+                    // if record asx code == an existing holding asx code, add to current holding and adjust average price. otherwise create new holding.
+                    Buy(record);
             }
             ViewData["Holdings"] = _context.Holding;
             return Math.Round(total, 2);
+        }
+
+        private void Sell(Trade record, double total)
+        {
+            var sold = false;
+            foreach (var holding in _context.Holding)
+            {
+                if (holding.Code == record.Code)
+                {
+                    sold = true;
+                    var recordUnits = record.Units;
+                    holding.Units -= recordUnits;
+
+                    if (holding.Units < 0)
+                        throw new Exception("Insufficient holdings for trade type sale of" + holding.Code);
+
+                    var costPrice = recordUnits * holding.AVGPrice;
+                    var saleValue = (record.Price * recordUnits) - (record.GST + record.Brokerage);
+                    var profitLoss = saleValue - costPrice;
+                    // Delete holding if all units sold
+                    if (holding.Units == 0)
+                        _context.Remove(holding);
+
+                    total += profitLoss;
+                }
+            }
+            if (sold == false)
+                throw new Exception($"Cannot sell a holding which does not exist. Please add {record.Code} holdings from previous financial year");
+
+            _context.SaveChanges();
+        }
+
+        private void Buy(Trade record)
+        {
+            var adjusted = 0;
+            foreach (var holding in _context.Holding)
+            {
+                if (holding.Code == record.Code && holding.Units > 0)
+                {
+                    holding.Units += record.Units;
+                    var totalCostPrice = record.Consideration + (holding.Units * holding.AVGPrice);
+                    holding.AVGPrice = Math.Round(totalCostPrice / holding.Units, 2);
+                    var purchaseDate = record.PurchaseDate.ToDateTime(TimeOnly.MinValue);
+                    holding.PurchaseDate = purchaseDate;
+                    adjusted = 1;
+                }
+
+            }
+            if (adjusted == 0)
+            {
+                var purchaseDate = record.PurchaseDate.ToDateTime(TimeOnly.MinValue);
+                var newHolding = new Holding(record.Code, record.Units, record.Price, purchaseDate);
+                _context.Add(newHolding);
+                _context.SaveChanges();
+            }
         }
     }
 }
