@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  stockcsvdb:
+    container_name: stock-csv-db
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 1433:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=password
+
+  stockcsv:
+    container_name: stock-csv-docker
+    image: ${DOCKER_REGISTRY-}stockcsv
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8001:80
+    depends_on:
+      - stockcsvdb
+    environment:
+      - DB_HOST=stockcsvdb
+      - DB_NAME=StockCSV
+      - DB_SA_PASSWORD=password

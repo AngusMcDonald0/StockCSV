@@ -4,6 +4,11 @@ using StockCSV.Data;
 using StockCSV.Interfaces;
 using StockCSV.Services;
 
+// db context dependancy injection 
+//var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
+//var dbName = Environment.GetEnvironmentVariable("DB_NAME");
+//var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD");
+//var connectionString = $"Data Source={dbHost};Initial Catalog={dbName};UserID=sa;Password={dbPassword}";
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<StockCSVContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("StockCSVContext") ?? throw new InvalidOperationException("Connection string 'StockCSVContext' not found.")));

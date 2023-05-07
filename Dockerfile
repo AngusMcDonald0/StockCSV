@@ -6,11 +6,11 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-WORKDIR /src
+WORKDIR /StockCSV
 COPY ["StockCSV.csproj", "."]
 RUN dotnet restore "./StockCSV.csproj"
 COPY . .
-WORKDIR "/src/."
+WORKDIR "/StockCSV/."
 RUN dotnet build "StockCSV.csproj" -c Release -o /app/build
 
 FROM build AS publish
