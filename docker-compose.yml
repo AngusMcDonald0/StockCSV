@@ -9,20 +9,14 @@ services:
       context: .
     ports:
       - 5000:80
-      - 8000:443
     depends_on:
       - stockcsvdb
 
   stockcsvdb:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    restart: always
+    image: mcr.microsoft.com/mssql/server:2022-RTM-CU2-ubuntu-20.04	
     container_name: stock-csv-db
     ports:
       - 1433:1433
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=A&VeryComplex123Password
-    volumes:
-      - sql-data:/var/lib/backup/data
-volumes:
-  sql-data:
