@@ -3,7 +3,7 @@ version: '3.4'
 services:
 
   stockcsv:
-    container_name: stock-csv-docker
+    container_name: stockcsv
     build:
       context: .
     ports:
@@ -14,7 +14,7 @@ services:
 
   stockcsvdb:
     image: mcr.microsoft.com/mssql/server:2022-RTM-CU2-ubuntu-20.04	
-    container_name: stock-csv-db
+    container_name: stockcsvdb
     ports:
       - 1433:1433
     environment:
