@@ -59,7 +59,7 @@ namespace StockCSV.Controllers
             foreach (var record in records)
             {
                 if (record.TradeType == "Sell")
-                    Sell(record, total);
+                    total += Sell(record, total);
 
                 else if (record.TradeType == "Buy")
                     Buy(record);
@@ -85,7 +85,7 @@ namespace StockCSV.Controllers
                     var costPrice = recordUnits * holding.AVGPrice;
                     var saleValue = (record.Price * recordUnits) - (record.GST + record.Brokerage);
                     var profitLoss = saleValue - costPrice;
-                    // Delete holding if all units sold
+
                     if (holding.Units == 0)
                         _context.Remove(holding);
 
