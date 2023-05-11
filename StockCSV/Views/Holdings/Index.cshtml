@@ -1,0 +1,71 @@
+﻿@model IEnumerable<StockCSV.Models.Holding>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="holdings-table">
+    <h1>Holdings at the start of financial year</h1>
+
+    <p>
+        <a asp-action="Create">Add holding from start of financial year</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Code)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Units)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AVGPrice)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PurchaseDate)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Code)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Units)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AVGPrice)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PurchaseDate)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+    <h1>Buffered File Upload</h1>
+
+    <hr />
+
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file" />
+        <button type="submit" asp-area="" asp-controller="Trades" asp-action="Index">Upload File</button>
+    </form>
+
+    @if (ViewBag.Message != null)
+    {
+        <div class="alert" style="margin-top:20px">
+            @ViewBag.Message
+        </div>
+    }
+</div>
