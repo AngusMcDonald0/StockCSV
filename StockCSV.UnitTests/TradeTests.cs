@@ -6,6 +6,11 @@ namespace StockCSV.UnitTests
         [SetUp]
         public void Setup()
         {
+            // Holding
+            // Trade of type sell some holdings
+            // Trade of type sell all holdings
+            // Trade of type buy new holding
+            // Trade of type buy add to existing holdings
         }
         
         [Test]
