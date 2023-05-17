@@ -6,6 +6,7 @@ namespace StockCSV.UnitTests
         [SetUp]
         public void Setup()
         {
+            var holding = new Holding { Id = 1, Code = "AGY", Units = 10000, AVGPrice = 0.1, PurchaseDate = DateTime.Now };
             // Holding
             // Trade of type sell some holdings
             // Trade of type sell all holdings
