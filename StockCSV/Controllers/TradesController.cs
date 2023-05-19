@@ -109,7 +109,7 @@ namespace StockCSV.Controllers
                     holding.Units += record.Units;
                     var totalCostPrice = record.Consideration + (holding.Units * holding.AVGPrice);
                     holding.AVGPrice = Math.Round(totalCostPrice / holding.Units, 2);
-                    var purchaseDate = record.PurchaseDate.ToDateTime(TimeOnly.MinValue);
+                    var purchaseDate = record.PurchaseDate/*.ToDateTime(TimeOnly.MinValue)*/;
                     holding.PurchaseDate = purchaseDate;
                     adjusted = 1;
                 }
@@ -117,7 +117,7 @@ namespace StockCSV.Controllers
             }
             if (adjusted == 0)
             {
-                var purchaseDate = record.PurchaseDate.ToDateTime(TimeOnly.MinValue);
+                var purchaseDate = record.PurchaseDate/*.ToDateTime(TimeOnly.MinValue)*/;
                 var newHolding = new Holding(record.Code, record.Units, record.Price, purchaseDate);
                 _context.Add(newHolding);
             }

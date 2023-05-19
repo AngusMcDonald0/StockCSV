@@ -6,14 +6,18 @@ namespace StockCSV.UnitTests
         [SetUp]
         public void Setup()
         {
-            var holding = new Holding { Id = 1, Code = "AGY", Units = 10000, AVGPrice = 0.1, PurchaseDate = DateTime.Now };
             // Holding
+            var holding = new Holding { Id = 1, Code = "AGY", Units = 10, AVGPrice = 1, PurchaseDate = DateTime.Now };
             // Trade of type sell some holdings
-            // Trade of type sell all holdings
+            var sellSome = new Trade { Code = "AGY", Units = 4, Price = 2, TradeType = "Sell", GST = 0, Brokerage = 1};
+            // Trade of type sell all holdings.
+            var sellAll = new Trade { Code = "AGY", Units = 10, Price = 2, TradeType = "Sell", GST = 0, Brokerage = 1 };
             // Trade of type buy new holding
+            var buyNew = new Trade { Code = "AGY", Units = 10, Price = 2, TradeType = "Buy", GST = 0, Brokerage = 1, PurchaseDate = DateTime.Now };
             // Trade of type buy add to existing holdings
+            var buyExisting = new Trade { Code = "AGY", Units = 10, Price = 2, TradeType = "Buy", GST = 0, Brokerage = 1, PurchaseDate = DateTime.Now };
         }
-        
+
         [Test]
         public void Sell_WhenCalled_ReturnTotalProfitLoss()
         {
