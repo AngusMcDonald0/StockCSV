@@ -5,6 +5,7 @@ using StockCSV.Interfaces;
 using StockCSV.Models;
 using System.Globalization;
 using CsvHelper;
+using Elfie.Serialization;
 
 namespace StockCSV.Controllers
 {
@@ -35,7 +36,7 @@ namespace StockCSV.Controllers
 
         private List<Trade> CsvToList()
         {
-            var uploadedFiles = @"C:\Users\angus\source\repos\StockCSV\UploadedFiles";
+            var uploadedFiles = "UploadedFiles";
             var path = Directory.GetFiles(uploadedFiles);
             if (path.Length >= 1)
             {
@@ -55,11 +56,11 @@ namespace StockCSV.Controllers
         {
             var records = CsvToList();
             records.Reverse();
-            var total = 0.0;
+            var total = 0.0; 
             foreach (var record in records)
             {
                 if (record.TradeType == "Sell")
-                    total += Sell(record, total);
+                    total += Sell(record);
 
                 else if (record.TradeType == "Buy")
                     Buy(record);
@@ -68,11 +69,12 @@ namespace StockCSV.Controllers
             return Math.Round(total, 2);
         }
 
-        private double Sell(Trade record, double total)
+        private double Sell(Trade record)
         {
             var sold = false;
             foreach (var holding in _context.Holding)
             {
+                var profitLoss = 0.0;
                 if (holding.Code == record.Code)
                 {
                     sold = true;
@@ -84,19 +86,17 @@ namespace StockCSV.Controllers
 
                     var costPrice = recordUnits * holding.AVGPrice;
                     var saleValue = (record.Price * recordUnits) - (record.GST + record.Brokerage);
-                    var profitLoss = saleValue - costPrice;
+                    profitLoss = saleValue - costPrice;
 
                     if (holding.Units == 0)
                         _context.Remove(holding);
-
-                    total += profitLoss;
+                    _context.SaveChanges();
+                    return profitLoss;
                 }
             }
             if (sold == false)
                 throw new Exception($"Cannot sell a holding which does not exist. Please add {record.Code} holdings from previous financial year");
-
-            _context.SaveChanges();
-            return total;
+            return 0.0;
         }
 
         private void Buy(Trade record)

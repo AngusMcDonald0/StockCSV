@@ -6,7 +6,7 @@ using StockCSV.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<StockCSVContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("StockCSVContext")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("StockCSVContext") ?? throw new InvalidOperationException("Connection string 'StockCSVContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
