@@ -8,7 +8,7 @@ namespace StockCSV.UnitTests
         [SetUp]
         public void Setup()
         {
-            
+            //var context = new StockCSVContext(); 
             // Holding
             var holding = new Holding { Id = 1, Code = "AGY", Units = 10, AVGPrice = 1, PurchaseDate = DateTime.Now };
             // Trade of type sell some holdings
