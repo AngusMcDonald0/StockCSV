@@ -19,7 +19,7 @@ namespace StockCSV.UnitTests
             var buyNew = new Trade { Code = "AGY", Units = 10, Price = 2, TradeType = "Buy", GST = 0, Brokerage = 1, PurchaseDate = DateTime.Now };
             // Trade of type buy add to existing holdings
             var buyExisting = new Trade { Code = "AGY", Units = 10, Price = 2, TradeType = "Buy", GST = 0, Brokerage = 1, PurchaseDate = DateTime.Now };
-            var records = new List<Trade>
+            //var records = new List<Trade>
         }
 
         [Test]
