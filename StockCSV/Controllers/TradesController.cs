@@ -22,9 +22,10 @@ namespace StockCSV.Controllers
             try
             {
                 // get csv data to display
-                ViewData["Trades"] = CsvToList();
+                var records = CsvToList();
+                ViewData["Trades"] = records; 
                 // calculate and show tax figures
-                ViewData["Total"] = TaxCalculator();
+                ViewData["Total"] = TaxCalculator(records);
             }
             catch (Exception ex)
             {
@@ -52,9 +53,8 @@ namespace StockCSV.Controllers
             return new List<Trade>();
         }
 
-        private double TaxCalculator()
+        private double TaxCalculator(List<Trade> records)
         {
-            var records = CsvToList();
             records.Reverse();
             var total = 0.0; 
             foreach (var record in records)

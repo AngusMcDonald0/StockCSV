@@ -1,3 +1,5 @@
+using StockCSV.Data;
+
 namespace StockCSV.UnitTests
 {
     [TestFixture]
@@ -6,6 +8,7 @@ namespace StockCSV.UnitTests
         [SetUp]
         public void Setup()
         {
+            
             // Holding
             var holding = new Holding { Id = 1, Code = "AGY", Units = 10, AVGPrice = 1, PurchaseDate = DateTime.Now };
             // Trade of type sell some holdings
@@ -16,10 +19,11 @@ namespace StockCSV.UnitTests
             var buyNew = new Trade { Code = "AGY", Units = 10, Price = 2, TradeType = "Buy", GST = 0, Brokerage = 1, PurchaseDate = DateTime.Now };
             // Trade of type buy add to existing holdings
             var buyExisting = new Trade { Code = "AGY", Units = 10, Price = 2, TradeType = "Buy", GST = 0, Brokerage = 1, PurchaseDate = DateTime.Now };
+            var records = new List<Trade>
         }
 
         [Test]
-        public void Sell_WhenCalled_ReturnTotalProfitLoss()
+        public void TaxCalculator_WhenCalled_ReturnTotalProfitLoss()
         {
             Assert.Pass();
         }
